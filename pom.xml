@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.iremembr.jtraxxs</groupId>
             <artifactId>jtraxxs</artifactId>
-            <version>0.0.0-SNAPSHOT</version>
+            <version>0.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
