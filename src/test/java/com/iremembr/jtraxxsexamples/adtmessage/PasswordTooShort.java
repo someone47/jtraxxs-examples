@@ -1,4 +1,4 @@
-package com.iremembr.jtraxxsexamples.messages;
+package com.iremembr.jtraxxsexamples.adtmessage;
 
 import java.util.function.Function;
 

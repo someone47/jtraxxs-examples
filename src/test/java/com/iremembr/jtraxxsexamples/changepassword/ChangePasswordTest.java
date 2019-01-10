@@ -7,6 +7,7 @@ import com.iremembr.jtraxxsexamples.changepassword.messages.UserNotFound;
 import com.iremembr.jtraxxsexamples.changepassword.messages.UserUpdateFailed;
 import com.iremembr.jtraxxsexamples.changepassword.messages.WrongPassword;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -24,8 +25,12 @@ class ChangePasswordTest {
     @Mock
     UserRepository userRepository;
 
+    private static void println(TestInfo testInfo, String text) {
+        System.out.println(testInfo.getDisplayName() + ": " + text);
+    }
+
     @Test
-    void ok() {
+    void success(TestInfo testInfo) {
         // Given
         User user = new User("joe", "1234secret");
         when(userRepository.find("joe")).thenReturn(ValueResult.ok(user));
@@ -34,19 +39,27 @@ class ChangePasswordTest {
         // When
         VoidResult<Message> result = userService.changePassword("joe", "1234secret", "password567");
 
+        result
+                .onSuccess(() -> println(testInfo,"Password changed"))
+                .onFailure(msg -> println(testInfo,msg.text()));
+
         // Then
         assertThat(result.isSuccessful()).isTrue();
         verify(userRepository).update(user);
     }
 
     @Test
-    void unknownUser() {
+    void unknownUser(TestInfo testInfo) {
         // Given
         User user = new User("joe", "1234secret");
         when(userRepository.find("joe")).thenReturn(ValueResult.fail(new UserNotFound("joe")));
 
         // When
         VoidResult<Message> result = userService.changePassword("joe", "1234secret", "password567");
+
+        result
+                .onSuccess(() -> println(testInfo,"Password changed"))
+                .onFailure(msg -> println(testInfo,msg.text()));
 
         // Then
         assertThat(result.hasFailed()).isTrue();
@@ -56,13 +69,17 @@ class ChangePasswordTest {
     }
 
     @Test
-    void wrongPassword() {
+    void wrongPassword(TestInfo testInfo) {
         // Given
         User user = new User("joe", "wrong-password");
         when(userRepository.find("joe")).thenReturn(ValueResult.ok(user));
 
         // When
         VoidResult<Message> result = userService.changePassword("joe", "1234secret", "password567");
+
+        result
+                .onSuccess(() -> println(testInfo,"Password changed"))
+                .onFailure(msg -> println(testInfo,msg.text()));
 
         // Then
         assertThat(result.hasFailed()).isTrue();
@@ -71,7 +88,7 @@ class ChangePasswordTest {
     }
 
     @Test
-    void userUpdateFailed() {
+    void userUpdateFailed(TestInfo testInfo) {
         // Given
         User user = new User("joe", "1234secret");
         when(userRepository.find("joe")).thenReturn(ValueResult.ok(user));
@@ -79,6 +96,10 @@ class ChangePasswordTest {
 
         // When
         VoidResult<Message> result = userService.changePassword("joe", "1234secret", "password567");
+
+        result
+                .onSuccess(() -> println(testInfo,"Password changed"))
+                .onFailure(msg -> println(testInfo,msg.text()));
 
         // Then
         assertThat(result.hasFailed()).isTrue();

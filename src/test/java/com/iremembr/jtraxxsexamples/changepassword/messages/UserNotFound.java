@@ -11,4 +11,9 @@ public class UserNotFound implements Message {
     public String username() {
         return username;
     }
+
+    @Override
+    public String text() {
+        return String.format("User '%s' not found", username);
+    }
 }

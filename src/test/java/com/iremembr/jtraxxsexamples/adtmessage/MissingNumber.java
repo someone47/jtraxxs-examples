@@ -1,12 +1,15 @@
-package com.iremembr.jtraxxsexamples.messages;
+package com.iremembr.jtraxxsexamples.adtmessage;
 
 import java.util.function.Function;
 
-public interface PasswordQualityMessage {
+public class MissingNumber implements PasswordQualityMessage {
 
-    <T> T match(
+    @Override
+    public <T> T match(
             Function<PasswordTooShort, T> tooShort,
             Function<MissingNumber, T> missingNumber,
             Function<MissingUppercaseLetter, T> missingUppercaseLetter
-    );
+    ) {
+        return missingNumber.apply(this);
+    }
 }
